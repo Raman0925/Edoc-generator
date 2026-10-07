@@ -50,7 +50,10 @@ def discover_reports(profile: Profile) -> list[Path]:
 
 def match_certificate(report: Path, profile: Profile) -> Path:
     root = Path(profile.certificate_dir).expanduser().resolve()
-    relative = report.relative_to(Path(profile.input_dir).expanduser().resolve())
+    try:
+        relative = report.expanduser().resolve().relative_to(Path(profile.input_dir).expanduser().resolve())
+    except ValueError as exc:
+        raise ValidationError("The report is outside the configured input folder.") from exc
     folder = root / relative.parent if profile.recursive else root
     candidates = [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() == ".pdf"
                   and p.stem.casefold() == report.stem.casefold()] if folder.is_dir() else []
