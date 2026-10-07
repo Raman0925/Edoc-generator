@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "template": "C:/Calibration/approval-template.xlsx",
+  "input_dir": "C:/Calibration/Input",
+  "output_dir": "C:/Calibration/Output",
+  "certificate_mode": "report",
+  "certificate_dir": "",
+  "approval_sheet": "Approval",
+  "report_sheet": "Report",
+  "recursive": false,
+  "keep_components": true,
+  "mappings": [
+    {"label": "Serial number", "source_sheet": "Report", "source_cell": "B4", "target_sheet": "Approval", "target_cell": "F6", "mode": "text", "required": true, "allow_formula_overwrite": false},
+    {"label": "Calibration date", "source_sheet": "Report", "source_cell": "D5", "target_sheet": "Approval", "target_cell": "F7", "mode": "value", "required": true, "allow_formula_overwrite": false},
+    {"label": "Sensitivity", "source_sheet": "Report", "source_cell": "C12", "target_sheet": "Approval", "target_cell": "D14", "mode": "value", "required": true, "allow_formula_overwrite": false},
+    {"label": "Measured value", "source_sheet": "Report", "source_cell": "C13", "target_sheet": "Approval", "target_cell": "D15", "mode": "value", "required": true, "allow_formula_overwrite": false},
+    {"label": "Uncertainty", "source_sheet": "Report", "source_cell": "C14", "target_sheet": "Approval", "target_cell": "D16", "mode": "value", "required": true, "allow_formula_overwrite": false}
+  ]
+}
