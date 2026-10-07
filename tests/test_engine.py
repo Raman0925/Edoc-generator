@@ -225,7 +225,7 @@ class EngineTests(unittest.TestCase):
         pdf(certs / "nested" / "a.pdf")
         self.profile.recursive = True
         self.profile.certificate_dir = str(certs)
-        self.assertEqual(match_certificate(report, self.profile), certs / "nested" / "a.pdf")
+        self.assertEqual(match_certificate(report, self.profile), (certs / "nested" / "a.pdf").resolve())
 
     def test_fatal_excel_startup_is_recorded(self):
         self.report("a.xlsx")
