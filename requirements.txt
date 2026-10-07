@@ -1,0 +1,2 @@
+pypdf==6.18.1
+pywin32==312; sys_platform == "win32"
