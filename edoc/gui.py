@@ -100,7 +100,6 @@ class Application(tk.Tk):
         ttk.Button(toolbar, text="Save profile", command=self.save).pack(side="left", padx=(0, 8))
         ttk.Button(toolbar, text="Help", command=self.help).pack(side="right")
         self.tabs = ttk.Notebook(self)
-        self.tabs.pack(fill="both", expand=True, padx=24, pady=(0, 4))
         self.setup_tab = ttk.Frame(self.tabs, padding=20)
         self.mapping_tab = ttk.Frame(self.tabs, padding=20)
         self.run_tab = ttk.Frame(self.tabs, padding=20)
@@ -111,7 +110,8 @@ class Application(tk.Tk):
         self.build_mappings()
         self.build_run()
         self.status = tk.StringVar(value="Choose your Excel approval template and input folder to begin.")
-        ttk.Label(self, textvariable=self.status, style="Status.TLabel", padding=(28, 13)).pack(fill="x")
+        ttk.Label(self, textvariable=self.status, style="Status.TLabel", padding=(28, 13)).pack(side="bottom", fill="x")
+        self.tabs.pack(fill="both", expand=True, padx=24, pady=(0, 4))
         if settings_path().is_file():
             try:
                 self.apply_profile(load_profile(settings_path()))
@@ -201,20 +201,20 @@ class Application(tk.Tk):
                                ("Preview sample", self.preview_sample)]:
             ttk.Button(actions, text=label, command=command).pack(side="left", padx=(0, 7))
         columns = ("label", "source", "target", "mode", "required", "formula")
-        self.mapping_tree = ttk.Treeview(self.mapping_tab, columns=columns, show="headings", selectmode="browse")
+        table = ttk.Frame(self.mapping_tab)
+        self.mapping_tree = ttk.Treeview(table, columns=columns, show="headings", selectmode="browse", height=6)
         for key, heading, width in [("label", "Field", 130), ("source", "Report sheet!cell", 210),
                                     ("target", "Approval sheet!cell", 210), ("mode", "Mode", 65),
                                     ("required", "Required", 75), ("formula", "Replace formula", 100)]:
             self.mapping_tree.heading(key, text=heading)
             self.mapping_tree.column(key, width=width, minwidth=50)
-        table = ttk.Frame(self.mapping_tab)
-        table.pack(fill="both", expand=True)
-        self.mapping_tree.pack(in_=table, side="left", fill="both", expand=True)
+        self.mapping_tree.pack(side="left", fill="both", expand=True)
         scrollbar = ttk.Scrollbar(table, orient="vertical", command=self.mapping_tree.yview)
         scrollbar.pack(side="right", fill="y")
         self.mapping_tree.configure(yscrollcommand=scrollbar.set)
         self.mapping_tree.bind("<Double-1>", lambda _: self.edit_mapping())
-        ttk.Label(self.mapping_tab, text="Use exact worksheet names and one cell address per mapping.\nText mode preserves displayed units / leading zeros. Value mode copies numbers and dates.\nPreview reads a sample without writing or exporting anything.", style="Muted.TLabel").pack(anchor="w", pady=(14, 0))
+        ttk.Label(self.mapping_tab, text="Use exact worksheet names and one cell address per mapping.\nText mode preserves displayed units / leading zeros. Value mode copies numbers and dates.\nPreview reads a sample without writing or exporting anything.", style="Muted.TLabel").pack(side="bottom", anchor="w", pady=(14, 0))
+        table.pack(fill="both", expand=True)
 
     def build_run(self):
         actions = ttk.Frame(self.run_tab)
@@ -226,20 +226,20 @@ class Application(tk.Tk):
         self.output_button.pack(side="right")
         self.progress = ttk.Progressbar(self.run_tab, mode="determinate")
         self.progress.pack(fill="x", pady=(0, 12))
-        self.run_tree = ttk.Treeview(self.run_tab, columns=("source", "status", "details"), show="headings")
+        table = ttk.Frame(self.run_tab)
+        self.run_tree = ttk.Treeview(table, columns=("source", "status", "details"), show="headings", height=6)
         for key, title, width in [("source", "Report", 200), ("status", "Status", 90), ("details", "Output or error", 580)]:
             self.run_tree.heading(key, text=title)
             self.run_tree.column(key, width=width)
         self.run_tree.tag_configure("failed", foreground="#ab2431")
         self.run_tree.tag_configure("success", foreground="#167047")
-        table = ttk.Frame(self.run_tab)
-        table.pack(fill="both", expand=True)
-        self.run_tree.pack(in_=table, side="left", fill="both", expand=True)
+        self.run_tree.pack(side="left", fill="both", expand=True)
         scrollbar = ttk.Scrollbar(table, orient="vertical", command=self.run_tree.yview)
         scrollbar.pack(side="right", fill="y")
         self.run_tree.configure(yscrollcommand=scrollbar.set)
         self.run_tree.bind("<Double-1>", self.show_result)
-        ttk.Label(self.run_tab, text="Every batch gets a new output folder. Successful reports contain a filled approval workbook,\nfinal.pdf and audit.json. batch.json lists successes, failures and unprocessed reports.\nDouble-click a result for its full path or error.", style="Muted.TLabel").pack(anchor="w", pady=(14, 0))
+        ttk.Label(self.run_tab, text="Every batch gets a new output folder. Successful reports contain a filled approval workbook,\nfinal.pdf and audit.json. batch.json lists successes, failures and unprocessed reports.\nDouble-click a result for its full path or error.", style="Muted.TLabel").pack(side="bottom", anchor="w", pady=(14, 0))
+        table.pack(fill="both", expand=True)
 
     def scroll_setup(self, event):
         if self.tabs.select() == str(self.setup_tab):
